@@ -141,7 +141,7 @@ public class UserDAO implements IUserDAO {
 			statement.setString(++index, u.getFirstName());
 			statement.setString(++index, u.getLastName());
 			statement.setString(++index, u.getEmail());
-			statement.setInt(++index, 1);
+			statement.setInt(++index, u.getRole().getRoleId());
 
 			statement.execute();
 			return true;
