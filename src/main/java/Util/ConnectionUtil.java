@@ -7,9 +7,16 @@ import java.sql.SQLException;
 public class ConnectionUtil {
 	
 	public static Connection getConnection() throws SQLException {
+		
+		try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		
 		String url = "jdbc:postgresql://localhost:5432/banking";
 		String username = "postgres";
-		String password = "";
+		String password = "79JeDaTaCr";
 		
 		
 		return DriverManager.getConnection(url, username, password);
@@ -20,7 +27,7 @@ public class ConnectionUtil {
 //	public static void main(String[] args) {
 //		
 //		//Try with resources will automatically close the resource at the end of the try or catch block
-//		try(Connection conn = Connectionutil.getConnection()){
+//		try(Connection conn = ConnectionUtil.getConnection()){
 //			System.out.println("connection successful");
 //		}catch(SQLException e) {
 //			System.out.println(e);

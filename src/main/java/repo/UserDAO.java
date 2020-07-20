@@ -95,7 +95,7 @@ public class UserDAO implements IUserDAO {
 	public User findByUsername(String username) {
 		try (Connection conn = ConnectionUtil.getConnection()) {
 
-			String sql = "SELECT * FROM users WHERE username = "+username+";";
+			String sql = "SELECT * FROM users WHERE username = '"+username+"';";
 
 			Statement statement = conn.createStatement();
 
