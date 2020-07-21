@@ -54,7 +54,8 @@ public class UserController {
 				User u = om.readValue(body, User.class);
 
 				if (us.addUser(u)) {
-					String json = om.writeValueAsString(u);
+					User addedu = us.findByUsername(u.getUsername());
+					String json = om.writeValueAsString(addedu);
 					res.setStatus(201);
 					res.getWriter().println(json);
 				} else {
@@ -67,6 +68,73 @@ public class UserController {
 			res.setStatus(401);
 			res.getWriter().println("The requested action is not permitted");
 
+		}
+
+	}
+
+	public void manageUser(HttpServletRequest req, HttpServletResponse res, HttpSession ses, String[] portions)
+			throws IOException {
+		LoginDTO l = (LoginDTO) ses.getAttribute("user");
+		User user = findByUsername(l.username);
+
+		if (portions.length == 2) {
+			int id = Integer.parseInt(portions[1]);
+
+			if (user.getUserId() == id || user.getRole().getRoleId() == 3 || user.getRole().getRoleId() == 4) {
+				User u = us.findById(id);
+				String json = om.writeValueAsString(u);
+				res.setStatus(200);
+				res.getWriter().println(json);
+			} else {
+				res.setStatus(401);
+				res.getWriter().println("The requested action is not permitted");
+			}
+		} else {
+
+			if (req.getMethod().equals("PUT")) {
+				BufferedReader reader = req.getReader();
+				StringBuilder s = new StringBuilder();
+				String line = reader.readLine();
+
+				while (line != null) {
+					s.append(line);
+					line = reader.readLine();
+				}
+
+				String body = new String(s);
+				User u = om.readValue(body, User.class);
+				
+				System.out.println(u);
+				System.out.println(user);
+				
+				if (user.getUserId() == u.getUserId() || user.getRole().getRoleId() == 4) {
+				
+					if (us.updateUser(u)) {
+						User updatedu = us.findById(u.getUserId());
+						String json = om.writeValueAsString(updatedu);
+						res.setStatus(200);
+						res.getWriter().println(json);
+					} else {
+						res.setStatus(400);
+						res.getWriter().println("Invalid fields");
+					}
+					
+				} else {
+					res.setStatus(401);
+					res.getWriter().println("The requested action is not permitted");
+
+				}
+			}
+
+			if (user.getRole().getRoleId() == 3 || user.getRole().getRoleId() == 4) {
+				List<User> all = us.findAllUsers();
+				String allu = om.writeValueAsString(all);
+				res.setStatus(200);
+				res.getWriter().println(allu);
+			} else {
+				res.setStatus(401);
+				res.getWriter().println("The requested action is not permitted");
+			}
 		}
 
 	}

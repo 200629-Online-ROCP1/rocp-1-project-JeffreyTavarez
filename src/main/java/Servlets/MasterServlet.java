@@ -27,22 +27,30 @@ public class MasterServlet extends HttpServlet {
 
 		String[] portions = URI.split("/");
 
-		System.out.println(Arrays.toString(portions));
-
 		try {
 			switch (portions[0]) {
 			case "login":
 				lc.login(req, res);
 				break;
-				
+
 			case "logout":
 				lc.logout(req, res);
 				break;
-				
+
 			case "register":
 				HttpSession ses = req.getSession(false);
 				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
 					uc.addUser(req, res, ses);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("There was no user logged into the session");
+				}
+				break;
+
+			case "user":
+				ses = req.getSession(false);
+				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
+					uc.manageUser(req, res, ses, portions);
 				} else {
 					res.setStatus(400);
 					res.getWriter().println("There was no user logged into the session");
@@ -57,6 +65,11 @@ public class MasterServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doGet(req, res);
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
 	}
 

@@ -10,8 +10,5 @@ public interface IUserDAO {
 	public User findById(int id);
 	public User findByUsername(String username);
 	public boolean addUser(User u);
-	public boolean updateRole(User u);
-	
-	
-
+	public boolean updateUser(User u);
 }

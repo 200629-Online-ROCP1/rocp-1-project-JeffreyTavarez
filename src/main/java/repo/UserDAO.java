@@ -154,14 +154,20 @@ public class UserDAO implements IUserDAO {
 	}
 
 	@Override
-	public boolean updateRole(User u) {
+	public boolean updateUser(User u) {
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "UPDATE users SET role = ? WHERE user_id = ?;";
+			String sql = "UPDATE users SET username = ?, password = ?, "
+					+ "first_name = ?, last_name = ?, email = ?, role = ? WHERE user_id = ?;";
 			
 			PreparedStatement statement = conn.prepareStatement(sql);
 			int index = 0;
 			
+			statement.setString(++index, u.getUsername());
+			statement.setString(++index, u.getPassword());
+			statement.setString(++index, u.getFirstName());
+			statement.setString(++index, u.getLastName());
+			statement.setString(++index, u.getEmail());
 			statement.setInt(++index, u.getRole().getRoleId());
 			statement.setInt(++index, u.getUserId());
 			
