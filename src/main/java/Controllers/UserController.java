@@ -61,15 +61,12 @@ public class UserController {
 				} else {
 					res.setStatus(400);
 					res.getWriter().println("Invalid fields");
-
 				}
 			}
 		} else {
 			res.setStatus(401);
 			res.getWriter().println("The requested action is not permitted");
-
 		}
-
 	}
 
 	public void manageUser(HttpServletRequest req, HttpServletResponse res, HttpSession ses, String[] portions)
@@ -103,12 +100,12 @@ public class UserController {
 
 				String body = new String(s);
 				User u = om.readValue(body, User.class);
-				
+
 				System.out.println(u);
 				System.out.println(user);
-				
-				if (user.getUserId() == u.getUserId() || user.getRole().getRoleId() == 4) {
-				
+
+				if (user.getRole().getRoleId() == 4) {
+
 					if (us.updateUser(u)) {
 						User updatedu = us.findById(u.getUserId());
 						String json = om.writeValueAsString(updatedu);
@@ -118,25 +115,37 @@ public class UserController {
 						res.setStatus(400);
 						res.getWriter().println("Invalid fields");
 					}
-					
+
+				} else if (user.getUserId() == u.getUserId()) {
+					u.setRole(user.getRole());
+
+					if (us.updateUser(u)) {
+						User updatedu = us.findById(u.getUserId());
+						String json = om.writeValueAsString(updatedu);
+						res.setStatus(200);
+						res.getWriter().println(json);
+					} else {
+						res.setStatus(400);
+						res.getWriter().println("Invalid fields");
+					}
+
 				} else {
 					res.setStatus(401);
 					res.getWriter().println("The requested action is not permitted");
+				}
+			} else {
 
+				if (user.getRole().getRoleId() == 3 || user.getRole().getRoleId() == 4) {
+					List<User> all = us.findAllUsers();
+					String allu = om.writeValueAsString(all);
+					res.setStatus(200);
+					res.getWriter().println(allu);
+				} else {
+					res.setStatus(401);
+					res.getWriter().println("The requested action is not permitted");
 				}
 			}
-
-			if (user.getRole().getRoleId() == 3 || user.getRole().getRoleId() == 4) {
-				List<User> all = us.findAllUsers();
-				String allu = om.writeValueAsString(all);
-				res.setStatus(200);
-				res.getWriter().println(allu);
-			} else {
-				res.setStatus(401);
-				res.getWriter().println("The requested action is not permitted");
-			}
 		}
-
 	}
 
 }

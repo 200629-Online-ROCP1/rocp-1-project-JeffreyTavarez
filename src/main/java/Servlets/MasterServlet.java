@@ -57,7 +57,7 @@ public class MasterServlet extends HttpServlet {
 				}
 				break;
 			}
-		} catch (NumberFormatException e) {
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			res.setStatus(400);
 		}

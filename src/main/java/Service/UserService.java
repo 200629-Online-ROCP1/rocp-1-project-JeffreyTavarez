@@ -39,8 +39,9 @@ public class UserService {
 		List<User> list = findAllUsers();
 
 		for (User us : list) {
-			if (us.getUsername().equals(u.getUsername()) && us.getFirstName().equals(u.getFirstName())
-					&& us.getLastName().equals(u.getLastName()) && us.getEmail().equals(u.getEmail())) {
+			if (us.getUsername().equals(u.getUsername()) && us.getPassword().equals(u.getPassword())
+					&& us.getFirstName().equals(u.getFirstName()) && us.getLastName().equals(u.getLastName())
+					&& us.getEmail().equals(u.getEmail()) && us.getRole().equals(u.getRole())) {
 				return false;
 			}
 		}
