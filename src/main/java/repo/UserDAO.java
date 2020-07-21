@@ -13,14 +13,13 @@ import Models.User;
 import Util.ConnectionUtil;
 
 public class UserDAO implements IUserDAO {
-	
-	private static final IRoleDAO rdao = new RoleDAO();
 
+	private static final IRoleDAO rdao = new RoleDAO();
 
 	@Override
 	public List<User> findAllUsers() {
 
-		try (Connection conn = ConnectionUtil.getConnection()){
+		try (Connection conn = ConnectionUtil.getConnection()) {
 
 			String sql = "SELECT * FROM users;";
 
@@ -38,11 +37,8 @@ public class UserDAO implements IUserDAO {
 				u.setFirstName(result.getString("first_name"));
 				u.setLastName(result.getString("last_name"));
 				u.setEmail(result.getString("email"));
-
-				if (result.getString("role") != null) {
-					Role r = rdao.findById(result.getInt("role"));
-					u.setRole(r);
-				}
+				Role r = rdao.findById(result.getInt("role"));
+				u.setRole(r);
 
 				list.add(u);
 
@@ -75,11 +71,8 @@ public class UserDAO implements IUserDAO {
 				u.setFirstName(result.getString("first_name"));
 				u.setLastName(result.getString("last_name"));
 				u.setEmail(result.getString("email"));
-
-				if (result.getString("role") != null) {
-					Role r = rdao.findById(result.getInt("role"));
-					u.setRole(r);
-				}
+				Role r = rdao.findById(result.getInt("role"));
+				u.setRole(r);
 
 				return u;
 			}
@@ -95,7 +88,7 @@ public class UserDAO implements IUserDAO {
 	public User findByUsername(String username) {
 		try (Connection conn = ConnectionUtil.getConnection()) {
 
-			String sql = "SELECT * FROM users WHERE username = '"+username+"';";
+			String sql = "SELECT * FROM users WHERE username = '" + username + "';";
 
 			Statement statement = conn.createStatement();
 
@@ -109,20 +102,19 @@ public class UserDAO implements IUserDAO {
 				u.setFirstName(result.getString("first_name"));
 				u.setLastName(result.getString("last_name"));
 				u.setEmail(result.getString("email"));
-
-				if (result.getString("role") != null) {
-					Role r = rdao.findById(result.getInt("role"));
-					u.setRole(r);
-				}
+				Role r = rdao.findById(result.getInt("role"));
+				u.setRole(r);
 
 				return u;
 
 			}
-			
-		} catch (SQLException e) {
+
+		} catch (
+
+		SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
@@ -155,14 +147,14 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public boolean updateUser(User u) {
-		
-		try(Connection conn = ConnectionUtil.getConnection()){
+
+		try (Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "UPDATE users SET username = ?, password = ?, "
 					+ "first_name = ?, last_name = ?, email = ?, role = ? WHERE user_id = ?;";
-			
+
 			PreparedStatement statement = conn.prepareStatement(sql);
 			int index = 0;
-			
+
 			statement.setString(++index, u.getUsername());
 			statement.setString(++index, u.getPassword());
 			statement.setString(++index, u.getFirstName());
@@ -170,14 +162,14 @@ public class UserDAO implements IUserDAO {
 			statement.setString(++index, u.getEmail());
 			statement.setInt(++index, u.getRole().getRoleId());
 			statement.setInt(++index, u.getUserId());
-			
+
 			statement.execute();
 			return true;
-					
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 

@@ -22,6 +22,10 @@ public class AccountService {
 		return adao.addAccount(a);
 	}
 	
+	public boolean updateAccount(Account a) {
+		return adao.updateAccount(a);
+	}
+	
 	
 	
 }

@@ -20,5 +20,10 @@ public class AccountController {
 	public boolean addAccount(Account a) {
 		return as.addAccount(a);
 	}
+	
+	public boolean updateAccount(Account a) {
+		return as.updateAccount(a);
+		
+	}
 
 }

@@ -47,10 +47,26 @@ public class MasterServlet extends HttpServlet {
 				}
 				break;
 
-			case "user":
+			case "users":
 				ses = req.getSession(false);
 				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
 					uc.manageUser(req, res, ses, portions);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("There was no user logged into the session");
+				}
+				break;
+				
+			case "accounts":
+				ses = req.getSession(false);
+				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
+					
+					if (req.getMethod().equals("POST") && portions.length == 2) {
+						//transaction controller takes over
+					} else {
+						//accounts controller takes over
+					}
+					// uc.manageUser(req, res, ses, portions);
 				} else {
 					res.setStatus(400);
 					res.getWriter().println("There was no user logged into the session");
