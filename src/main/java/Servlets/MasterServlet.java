@@ -1,7 +1,6 @@
 package Servlets;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,13 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Controllers.AccountController;
 import Controllers.LoginController;
+import Controllers.TransactionController;
 import Controllers.UserController;
 
 public class MasterServlet extends HttpServlet {
 
 	private static final LoginController lc = new LoginController();
 	private static final UserController uc = new UserController();
+	private static final AccountController ac = new AccountController();
+	private static final TransactionController tc = new TransactionController();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -62,11 +65,10 @@ public class MasterServlet extends HttpServlet {
 				if (ses != null && ((Boolean) ses.getAttribute("loggedin"))) {
 					
 					if (req.getMethod().equals("POST") && portions.length == 2) {
-						//transaction controller takes over
+						tc.manageTransaction(req, res, ses, portions);
 					} else {
-						//accounts controller takes over
+						ac.manageAccount(req, res, ses, portions);
 					}
-					// uc.manageUser(req, res, ses, portions);
 				} else {
 					res.setStatus(400);
 					res.getWriter().println("There was no user logged into the session");

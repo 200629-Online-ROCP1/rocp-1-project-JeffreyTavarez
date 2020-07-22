@@ -11,6 +11,7 @@ import java.util.List;
 import Models.Account;
 import Models.AccountStatus;
 import Models.AccountType;
+import Models.User;
 import Util.ConnectionUtil;
 
 public class AccountDAO implements IAccountDAO {
@@ -156,6 +157,50 @@ public class AccountDAO implements IAccountDAO {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean accountOwner(Account a, User u) {
+		try (Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "INSERT INTO account_owner(account_id, user_id) VALUES(?,?);";
+
+			PreparedStatement statement = conn.prepareStatement(sql);
+			int index = 0;
+			
+			statement.setInt(++index, a.getAccountId());
+			statement.setInt(++index, u.getUserId());
+
+			statement.execute();
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<Account> findByOwner(int id) {
+		try (Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM account_owner WHERE user_id = " + id + ";";
+
+			Statement statement = conn.createStatement();
+
+			List<Account> list = new ArrayList<>();
+
+			ResultSet result = statement.executeQuery(sql);
+
+			while (result.next()) {
+				Account a = findById(result.getInt("account_id"));
+				list.add(a);
+			}
+
+			return list;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
