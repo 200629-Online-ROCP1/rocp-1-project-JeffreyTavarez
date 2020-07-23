@@ -11,20 +11,23 @@ import javax.servlet.http.HttpSession;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Models.Account;
+import Models.AddOwnerDTO;
 import Models.DepositWithdrawDTO;
 import Models.LoginDTO;
 import Models.TransferDTO;
 import Models.User;
+import Service.AddOwnerService;
 import Service.DepositWithdrawService;
 import Service.TransferService;
 
 public class TransactionController {
 
-	public static final UserController uc = new UserController();
-	public static final AccountController ac = new AccountController();
-	public static final DepositWithdrawService dws = new DepositWithdrawService();
-	public static final TransferService ts = new TransferService();
+	private static final UserController uc = new UserController();
+	private static final AccountController ac = new AccountController();
+	private static final DepositWithdrawService dws = new DepositWithdrawService();
+	private static final TransferService ts = new TransferService();
 	private static final ObjectMapper om = new ObjectMapper();
+	private static final AddOwnerService aos = new AddOwnerService();
 
 	public void manageTransaction(HttpServletRequest req, HttpServletResponse res, HttpSession ses, String[] portions)
 			throws IOException {
@@ -47,21 +50,24 @@ public class TransactionController {
 		case "deposit":
 			DepositWithdrawDTO d = om.readValue(body, DepositWithdrawDTO.class);
 
-			Account a = ac.findById(d.account_id);
-			List<Account> alist = ac.findByOwner(user.getUserId());
-			boolean permitted = false;
+			Account a_d = ac.findById(d.accountId);
+			List<Account> list_d = ac.findByOwner(user.getUserId());
+			boolean permitted_d = false;
 
-			for (Account ac : alist) {
-				if (ac.getAccountId() == (a.getAccountId())) {
-					permitted = true;
+			for (Account ac : list_d) {
+				if (ac.getAccountId() == (a_d.getAccountId())) {
+					permitted_d = true;
 				}
 			}
 
-			if (permitted || user.getRole().getRoleId() == 4) {
+			if (permitted_d || user.getRole().getRoleId() == 4 && a_d.getStatus().getStatusId() == 2) {
 
 				if (dws.deposit(d)) {
 					res.setStatus(200);
-					res.getWriter().println("$" + d.amount + " has been deposited to Account #" + d.account_id);
+					res.getWriter().println("$" + d.amount + " has been deposited to Account #" + d.accountId);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("Invalid deposit");
 				}
 
 			} else {
@@ -73,21 +79,24 @@ public class TransactionController {
 		case "withdraw":
 			DepositWithdrawDTO w = om.readValue(body, DepositWithdrawDTO.class);
 
-			Account a = ac.findById(w.account_id);
-			List<Account> alist = ac.findByOwner(user.getUserId());
-			boolean permitted = false;
+			Account a_w = ac.findById(w.accountId);
+			List<Account> list_w = ac.findByOwner(user.getUserId());
+			boolean permitted_w = false;
 
-			for (Account ac : alist) {
-				if (ac.getAccountId() == (a.getAccountId())) {
-					permitted = true;
+			for (Account ac : list_w) {
+				if (ac.getAccountId() == (a_w.getAccountId())) {
+					permitted_w = true;
 				}
 			}
 
-			if (permitted || user.getRole().getRoleId() == 4) {
+			if (permitted_w || user.getRole().getRoleId() == 4 && a_w.getStatus().getStatusId() == 2) {
 
 				if (dws.withdraw(w)) {
 					res.setStatus(200);
-					res.getWriter().println("$" + w.amount + " has been withdrawn from Account #" + w.account_id);
+					res.getWriter().println("$" + w.amount + " has been withdrawn from Account #" + w.accountId);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("Invalid withdraw");
 				}
 
 			} else {
@@ -99,28 +108,62 @@ public class TransactionController {
 		case "transfer":
 			TransferDTO t = om.readValue(body, TransferDTO.class);
 
-			Account a = ac.findById(t.sourceAccountId);
-			List<Account> alist = ac.findByOwner(user.getUserId());
-			boolean permitted = false;
+			Account a_t = ac.findById(t.sourceAccountId);
+			List<Account> list_t = ac.findByOwner(user.getUserId());
+			boolean permitted_t = false;
 
-			for (Account ac : alist) {
-				if (ac.getAccountId() == (a.getAccountId())) {
-					permitted = true;
+			for (Account ac : list_t) {
+				if (ac.getAccountId() == (a_t.getAccountId())) {
+					permitted_t = true;
 				}
 			}
 
-			if (permitted || user.getRole().getRoleId() == 4) {
+			if (permitted_t || user.getRole().getRoleId() == 4 && a_t.getStatus().getStatusId() == 2) {
 
 				if (ts.transfer(t)) {
 					res.setStatus(200);
 					res.getWriter().println("$" + t.amount + " has been transferred from Account #" + t.sourceAccountId
 							+ " to Account #" + t.targetAccountId);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("Invalid transfer");
 				}
 
 			} else {
 				res.setStatus(401);
 				res.getWriter().println("The requested action is not permitted");
 			}
+			break;
+
+		case "addowner":
+			AddOwnerDTO ao = om.readValue(body, AddOwnerDTO.class);
+
+			Account a_o = ac.findById(ao.accountId);
+			List<Account> list_o = ac.findByOwner(user.getUserId());
+			boolean permitted_o = false;
+
+			for (Account ac : list_o) {
+				if (ac.getAccountId() == (a_o.getAccountId())) {
+					permitted_o = true;
+				}
+			}
+
+			if ((permitted_o && a_o.getStatus().getStatusId() == 2 && user.getRole().getRoleId() == 2)
+					|| user.getRole().getRoleId() == 4) {
+
+				if (aos.AddOwner(ao)) {
+					res.setStatus(200);
+					res.getWriter().println("Owner #" + ao.userId + " has been added to Account #" + ao.accountId);
+				} else {
+					res.setStatus(400);
+					res.getWriter().println("Failed to add owner");
+				}
+
+			} else {
+				res.setStatus(401);
+				res.getWriter().println("The requested action is not permitted");
+			}
+
 			break;
 
 		}

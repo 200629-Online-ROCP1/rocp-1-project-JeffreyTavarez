@@ -38,6 +38,9 @@ public class AccountService {
 	public List<Account> findByOwner(int id) {
 		return adao.findByOwner(id);
 	}
-	
+
+	public Account findLast() {
+		return adao.findLast();
+	}
 	
 }

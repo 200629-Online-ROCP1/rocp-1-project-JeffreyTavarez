@@ -14,5 +14,6 @@ public interface IAccountDAO {
 	public boolean updateAccount(Account a);
 	public boolean accountOwner(Account a, User u);
 	public List<Account> findByOwner(int id);
+	public Account findLast();
 
 }

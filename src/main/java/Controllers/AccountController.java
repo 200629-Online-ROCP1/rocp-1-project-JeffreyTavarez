@@ -17,8 +17,8 @@ import Service.AccountService;
 
 public class AccountController {
 
-	private final AccountService as = new AccountService();
-	private final UserController uc = new UserController();
+	private static final AccountService as = new AccountService();
+	private static final UserController uc = new UserController();
 	private static final ObjectMapper om = new ObjectMapper();
 
 	public List<Account> findAll() {
@@ -44,6 +44,10 @@ public class AccountController {
 	
 	public List<Account> findByOwner(int userId) {
 		return as.findByOwner(userId);
+	}
+	
+	public Account findLast() {
+		return as.findLast();
 	}
 
 	public void manageAccount(HttpServletRequest req, HttpServletResponse res, HttpSession ses, String[] portions)
@@ -120,8 +124,7 @@ public class AccountController {
 				Account a = om.readValue(body, Account.class);
 
 				if (addAccount(a)) {
-					//i have a problem 
-					Account addeda = as.findById(a.getAccountId());
+					Account addeda = as.findLast();
 					accountOwner(addeda, user);
 					String json = om.writeValueAsString(addeda);
 					res.setStatus(201);

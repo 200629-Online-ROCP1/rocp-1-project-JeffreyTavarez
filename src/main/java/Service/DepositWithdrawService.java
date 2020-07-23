@@ -8,7 +8,7 @@ public class DepositWithdrawService {
 	private static final AccountService as = new AccountService();
 
 	public boolean deposit(DepositWithdrawDTO d) {
-		Account a = as.findById(d.account_id);
+		Account a = as.findById(d.accountId);
 		double currentBalance = a.getBalance();
 		if (d.amount > 0) {
 			a.setBalance(currentBalance + d.amount);
@@ -18,7 +18,7 @@ public class DepositWithdrawService {
 	}
 
 	public boolean withdraw(DepositWithdrawDTO w) {
-		Account a = as.findById(w.account_id);
+		Account a = as.findById(w.accountId);
 		double currentBalance = a.getBalance();
 		if (currentBalance > w.amount) {
 			a.setBalance(currentBalance - w.amount);

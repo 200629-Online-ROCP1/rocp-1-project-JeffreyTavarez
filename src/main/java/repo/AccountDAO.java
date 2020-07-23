@@ -202,5 +202,34 @@ public class AccountDAO implements IAccountDAO {
 		}
 		return null;
 	}
+	
+	@Override 
+	public Account findLast() {
+		try (Connection conn = ConnectionUtil.getConnection()) {
+
+			String sql = "SELECT * FROM account WHERE account_id = (SELECT MAX(account_id) FROM account);";
+
+			Statement statement = conn.createStatement();
+
+			ResultSet result = statement.executeQuery(sql);
+
+			if (result.next()) {
+				Account a = new Account();
+				a.setAccountId(result.getInt("account_id"));
+				a.setBalance(result.getInt("balance"));
+				AccountStatus as = sdao.findById(result.getInt("status"));
+				a.setStatus(as);
+				AccountType at = tdao.findById(result.getInt("type"));
+				a.setType(at);
+
+				return a;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 
 }

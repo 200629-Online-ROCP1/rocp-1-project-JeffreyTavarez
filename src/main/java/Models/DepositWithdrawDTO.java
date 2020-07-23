@@ -2,7 +2,7 @@ package Models;
 
 public class DepositWithdrawDTO {
 	
-	public int account_id;
+	public int accountId;
 	public double amount;
 
 }
