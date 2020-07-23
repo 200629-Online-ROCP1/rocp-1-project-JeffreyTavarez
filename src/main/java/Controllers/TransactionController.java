@@ -60,7 +60,7 @@ public class TransactionController {
 				}
 			}
 
-			if (permitted_d || user.getRole().getRoleId() == 4 && a_d.getStatus().getStatusId() == 2) {
+			if (permitted_d || user.getRole().getRoleId() == 4) {
 
 				if (dws.deposit(d)) {
 					res.setStatus(200);
@@ -89,7 +89,7 @@ public class TransactionController {
 				}
 			}
 
-			if (permitted_w || user.getRole().getRoleId() == 4 && a_w.getStatus().getStatusId() == 2) {
+			if (permitted_w || user.getRole().getRoleId() == 4) {
 
 				if (dws.withdraw(w)) {
 					res.setStatus(200);
@@ -118,7 +118,7 @@ public class TransactionController {
 				}
 			}
 
-			if (permitted_t || user.getRole().getRoleId() == 4 && a_t.getStatus().getStatusId() == 2) {
+			if (permitted_t || user.getRole().getRoleId() == 4) {
 
 				if (ts.transfer(t)) {
 					res.setStatus(200);
@@ -148,8 +148,8 @@ public class TransactionController {
 				}
 			}
 
-			if ((permitted_o && a_o.getStatus().getStatusId() == 2 && user.getRole().getRoleId() == 2)
-					|| user.getRole().getRoleId() == 4) {
+			if ((permitted_o && user.getRole().getRoleId() == 2)
+					|| (user.getRole().getRoleId() == 4)) {
 
 				if (aos.AddOwner(ao)) {
 					res.setStatus(200);

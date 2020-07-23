@@ -23,7 +23,7 @@ public class ConnectionUtil {
 		
 	}
 
-	
+// The following method tests the connection, runned as java application	
 //	public static void main(String[] args) {
 //		
 //		//Try with resources will automatically close the resource at the end of the try or catch block
@@ -35,7 +35,6 @@ public class ConnectionUtil {
 //	}	
 }
 
-// run as java application to test connection
 
 
 
